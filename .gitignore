@@ -21,3 +21,17 @@ node_modules/
 *.log
 *.sql
 *.sqlite
+wordpress-importer/class-wp-import.php
+wordpress-importer/compat.php
+wordpress-importer/parsers.php
+wordpress-importer/readme.txt
+wordpress-importer/wordpress-importer.php
+wordpress-importer/parsers/class-wxr-parser-regex.php
+wordpress-importer/parsers/class-wxr-parser-simplexml.php
+wordpress-importer/parsers/class-wxr-parser-xml.php
+wordpress-importer/parsers/class-wxr-parser.php
+.gitignore
+classic-editor/classic-editor.php
+classic-editor/LICENSE.md
+classic-editor/readme.txt
+classic-editor/js/block-editor-plugin.js
