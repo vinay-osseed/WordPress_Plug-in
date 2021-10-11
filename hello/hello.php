@@ -43,7 +43,9 @@ class helloPlugin {
     /* METHODS */
 
     function __construct() {
-        add_action('init', array( $this, 'renamePostType' ) );
+        add_action('init', [ $this, 'renamePostType' ] );
+
+        add_filter( 'the_content_more_link', [ $this, 'dh_modify_read_more_link' ] );
     }
 
     function activate() {
@@ -64,6 +66,11 @@ class helloPlugin {
         register_post_type( 'Hello', [ 'public' => true, 'label' => 'Hello' ] );
     }
 
+    function dh_modify_read_more_link() {
+
+        return '<a class="more-link" href="' . get_permalink() . '">Hello Read More!</a>';
+
+    }
 }
 
 /* CLASSES END */
@@ -74,19 +81,10 @@ if (class_exists('helloPlugin')) {
      */
 
     $hello = new helloPlugin();
+
+    /* Activation Hook Call */
+    register_activation_hook(__FILE__, [$hello, 'activate']);
+
+    /* Deactivation Hook Call */
+    register_deactivation_hook(__FILE__, [$hello, 'deactivate']);
 }
-
-/* Activation Hook Call */
-register_activation_hook(__FILE__, [$hello, 'activate']);
-
-/* Deactivation Hook Call */
-register_deactivation_hook(__FILE__, [$hello, 'deactivate']);
-
-
-// function dh_modify_read_more_link() {
-
-//     return '<a class="more-link" href="' . get_permalink() . '">Hello Read More!</a>';
-
-// }
-
-// add_filter( 'the_content_more_link', 'dh_modify_read_more_link' );
