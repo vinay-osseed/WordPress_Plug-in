@@ -6,6 +6,8 @@
  * Version: 1.0
  * Author: Vinay Gawade
  * Author URI: http://hello.com/
+ *
+ * @package hello
  */
 
 /* SECURITY */
@@ -43,6 +45,7 @@ class helloPlugin {
     /* METHODS */
 
     function __construct() {
+
         add_action('init', [ $this, 'renamePostType' ] );
 
         add_filter( 'the_content_more_link', [ $this, 'dh_modify_read_more_link' ] );
@@ -59,8 +62,6 @@ class helloPlugin {
         /* Do something on deactivate. */
         flush_rewrite_rules();
     }
-
-    function uninstall() { /* Do something on uninstall. */ }
 
     function renamePostType() {
         register_post_type( 'Hello', [ 'public' => true, 'label' => 'Hello' ] );
