@@ -38,84 +38,57 @@ if ( ! function_exists( 'add_action' ) ) {
 
 /* SECURITY */
 
+if ( ! class_exists( 'helloPlugin' ) ) { // Check if class exist or not if exist create it.
 
-/* CLASSES BEGIN */
-class assetsOfWp {
-    /* METHODS */
+    /* CLASSES BEGIN */
+    class helloPlugin {
+        public $plugin_name;
+        /* METHODS */
 
-    /**
-     * This class load assets of the plug-ins.
-     *
-     * plugins_url() for get plugins current directory.
-     */
-    public function adminAssets() {
+        public function __construct() {
+            $this->plugin_name = plugin_basename( __FILE__ );
 
-        /* Enqueue all assets for admin. */
-        wp_enqueue_style( 'custom-css', plugins_url( '/assets/admin/css/style.css', __FILE__ ) ); // add css
-        wp_enqueue_script( 'custom-js', plugins_url( '/assets/admin/js/script.js', __FILE__ ) ); // add JavaScript
+            /* Call actions & filters at intialization of the class*/
+            add_action( 'init', [ 'helloPlugin', 'addPostType' ] );
+            add_action( 'admin_menu', [ 'helloPlugin', 'addCustomPage' ] );
+            add_filter( "plugin_action_links_$this->plugin_name", [ 'helloPlugin', 'setting_link']);
+        }
+
+        public static function setting_link( $links ) {
+            $setting_link_tag = '<a href="admin.php?page=hello_setting" > Settings </a>';
+            array_push( $links, $setting_link_tag );
+            return $links;
+        }
+
+        public static function addCustomPage() {
+            add_menu_page(
+                'Hello Plug-in Setting',                // Page Title.
+                'Hello Setting',                        // Page Menu Name.
+                'manage_options',                       // Capability (Permission).
+                'hello_setting',                          // Menu Slug
+                [ 'helloPlugin', 'settingsPagePath' ],  // Call Callback Function
+                'dashicons-admin-generic',              // Icon
+                '50',                                   // Position in Numbers on Sidebar
+            );
+        }
+
+        public static function settingsPagePath() {
+            require_once plugin_dir_path( __FILE__ ) . 'templates/settings-page.php'; // Get template.
+        }
+
+        public static function addPostType() {
+            register_post_type( 'hello', [ 'public' => true, 'label' => 'Hello' ] ); // Add custom post type here.
+        }
+
     }
-
-    public function wpAssets() {
-
-        /* Enqueue all assets for wp. */
-        wp_enqueue_style( 'custom-css', plugins_url( '/assets/wp/css/style.css', __FILE__ ) ); // add css
-        wp_enqueue_script( 'custom-js', plugins_url( '/assets/wp/js/script.js', __FILE__ ) ); // add JavaScript
-    }
-
-    public function loadWpAssets() {
-        add_action( 'wp_enqueue_scripts', [ $this, 'wpAssets' ] );
-    }
-
-    public function loadAdminAssets() {
-        add_action( 'admin_enqueue_scripts', [ $this, 'adminAssets' ] );
-    }
-
-}
-
-class helloPlugin extends assetsOfWp {
-    /* METHODS */
-
-    public function __construct() {
-
-        /* Call actions & filters at intialization of the class*/
-        add_action( 'init', [ $this, 'renamePostType' ] );
-        add_filter( 'the_content_more_link', [ $this, 'dh_modify_read_more_link' ] );
-    }
-
-    public function renamePostType() {
-
-        /* Add custom post type here. */
-        register_post_type( 'hello', [ 'public' => true, 'label' => 'Hello' ] );
-    }
-
-    private function dh_modify_read_more_link() {
-
-        /* Modifies the read more insert tag's text here. */
-        return '<a class="more-link" href="' . get_permalink() . '">Hello Read More!</a>';
-    }
-
-    private function activate() {
-
-        /* Do something on activate. */
-        $this->renamePostType();
-        flush_rewrite_rules();
-    }
-
-    private function deactivate() {
-
-        /* Do something on deactivate. */
-        flush_rewrite_rules();
-    }
-}
 
 /* CLASSES END */
 
-if (class_exists('helloPlugin')) { // Check if class exist or not if exist create it's instance.
-
     $hello = new helloPlugin(); // instance of class
-    $hello->loadAdminAssets(); // loaded admin assets
-    $hello->loadWpAssets(); // loaded user assets
 
-    register_activation_hook( __FILE__, [ $hello, 'activate' ] ); // Activation Hook Call
-    register_deactivation_hook( __FILE__, [ $hello, 'deactivate' ] ); // Deactivation Hook Call
+    require_once plugin_dir_path( __FILE__ ) . 'inc/hello-activate.php';
+    register_activation_hook( __FILE__, [ 'helloActivate', 'activate' ] ); // Activation Hook Call
+
+    require_once plugin_dir_path( __FILE__ ) . 'inc/hello-deactivate.php';
+    register_deactivation_hook( __FILE__, [ 'helloDeactivate', 'deactivate' ] ); // Deactivation Hook Call
 }
