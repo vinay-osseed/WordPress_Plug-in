@@ -45,6 +45,8 @@ if ( ! function_exists( 'add_action' ) ) {
 
 /* SECURITY */
 
+define( "BASE", plugin_dir_path( __FILE__ ) );
+
 if ( ! class_exists( 'helloPlugin' ) ) { // Check if class exist or not if exist create it.
 
     /* CLASSES BEGIN */
@@ -80,7 +82,7 @@ if ( ! class_exists( 'helloPlugin' ) ) { // Check if class exist or not if exist
         }
 
         public static function settingsPagePath() {
-            require_once plugin_dir_path( __FILE__ ) . 'templates/settings-page.php'; // Get template.
+            require_once BASE. 'templates/settings-page.php'; // Get template.
         }
 
         public static function addPostType() {
@@ -92,6 +94,6 @@ if ( ! class_exists( 'helloPlugin' ) ) { // Check if class exist or not if exist
 /* CLASSES END */
 
     $hello = new helloPlugin(); // instance of class
-    register_activation_hook( __FILE__, [ 'activate', 'activate' ] ); // Activation Hook Call
-    register_deactivation_hook( __FILE__, [ 'deactivate', 'deactivate' ] ); // Deactivation Hook Call
+    // register_activation_hook( __FILE__, [ 'activate', 'activate' ] ); // Activation Hook Call
+    // register_deactivation_hook( __FILE__, [ 'deactivate', 'deactivate' ] ); // Deactivation Hook CallW
 }
