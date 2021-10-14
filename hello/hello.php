@@ -27,6 +27,13 @@
 /* All in one-line. */
 defined( 'ABSPATH' ) or die;
 
+/* Check if Autoload file is exist or not. */
+if ( file_exists( dirname( __FILE__ ) . '/../../../vendor/autoload.php' ) ) {
+    require_once  dirname( __FILE__ ) . '/../../../vendor/autoload.php' ; // Get Autoload File.
+}
+
+use inc\activate;
+use inc\deactivate;
 
 /**
  * 3.To ensure that wordpress working fine.
@@ -65,7 +72,7 @@ if ( ! class_exists( 'helloPlugin' ) ) { // Check if class exist or not if exist
                 'Hello Plug-in Setting',                // Page Title.
                 'Hello Setting',                        // Page Menu Name.
                 'manage_options',                       // Capability (Permission).
-                'hello_setting',                          // Menu Slug
+                'hello_setting',                        // Menu Slug
                 [ 'helloPlugin', 'settingsPagePath' ],  // Call Callback Function
                 'dashicons-admin-generic',              // Icon
                 '50',                                   // Position in Numbers on Sidebar
@@ -85,10 +92,6 @@ if ( ! class_exists( 'helloPlugin' ) ) { // Check if class exist or not if exist
 /* CLASSES END */
 
     $hello = new helloPlugin(); // instance of class
-
-    require_once plugin_dir_path( __FILE__ ) . 'inc/hello-activate.php';
-    register_activation_hook( __FILE__, [ 'helloActivate', 'activate' ] ); // Activation Hook Call
-
-    require_once plugin_dir_path( __FILE__ ) . 'inc/hello-deactivate.php';
-    register_deactivation_hook( __FILE__, [ 'helloDeactivate', 'deactivate' ] ); // Deactivation Hook Call
+    register_activation_hook( __FILE__, [ 'activate', 'activate' ] ); // Activation Hook Call
+    register_deactivation_hook( __FILE__, [ 'deactivate', 'deactivate' ] ); // Deactivation Hook Call
 }
