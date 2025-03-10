@@ -1,3 +1,2 @@
 <?php
-echo"hello osseed\n";
-?>
+// Silence is golden.
